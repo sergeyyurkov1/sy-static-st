@@ -1,0 +1,39 @@
+html, body {
+  margin: 0;
+  padding: 0;
+}
+canvas {
+  display: inline-block;
+}
+
+#gamesHome {
+  /*height: 600px;*/
+  /*width: 800px;*/
+  text-align: center;
+}
+
+#p5_loading {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+
+  /*position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);*/
+
+  border: 8px solid #f5f7f3;
+  border-top: 8px solid #7341e1;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 2s linear infinite;
+  
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
