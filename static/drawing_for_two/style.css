@@ -1,0 +1,83 @@
+#canvasContainer {
+    width: var(--app-width);
+    height: var(--app-height);
+    overflow: scroll;
+    scrollbar-width: auto;
+}
+
+:root {
+    --app-height: 100vh;
+    --app-width: 100%;
+}
+
+html, body {
+    height: var(--app-height);
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+/**/
+.sidebar {
+    background-color: #333;
+    box-shadow: 0px 0px 10px rgba(30, 30, 30, 0.75);
+    color: #fff;
+    transform: translate(-50%, -50%);
+    position: absolute;
+    left: 42px;
+    top: calc(var(--app-height) / 2);
+    height: auto;
+    padding: 5px;
+    z-index: 1000;
+}
+
+.sidebar ul {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-direction: column;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    height: 100%;
+}
+
+.sidebar ul li {
+    padding: 5px 0;
+}
+
+.sidebar input,
+.sidebar button {
+    width: 45px;
+}
+
+.sidebar li:nth-last-of-type(4) {
+    margin-top: auto;
+}
+
+.sidebar button {
+    background-color: transparent;
+    border: none;
+    color: #fff;
+    font-size: 20px;
+}
+
+.sidebar label {
+    display: block;
+    text-align: center;
+    font-size: 12px;
+    margin-bottom: 3px;
+}
+
+button.accordion-button.collapsed::after, button.accordion-button::after {
+    visibility: hidden;
+}
+
+button {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+#margg {
+    margin-right: 10px;
+}
