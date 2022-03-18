@@ -85,3 +85,7 @@ button.accordion-button.collapsed::after, button.accordion-button::after {
 ul {
     margin: auto;
 }
+
+element {
+    cursor: default !important;
+}

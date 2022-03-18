@@ -1,3 +1,4 @@
+// Fix Fabric.js touch events
 // (function () {
 //     var defaultOnTouchStartHandler = fabric.Canvas.prototype._onTouchStart;
 //     fabric.util.object.extend(fabric.Canvas.prototype, {
@@ -12,9 +13,10 @@
 //     });
 // })();
 
-let uuid
-
-backgroundColor_ = "#e9e9ed";
+// Init
+// ------------------------------------------------------------------------------------------
+let uuid;
+const backgroundColor_ = "#e9e9ed";
 
 const appDimensions = () => {
     const doc = document.documentElement;
@@ -24,6 +26,8 @@ const appDimensions = () => {
 window.addEventListener("resize", appDimensions);
 appDimensions();
 
+// Fabric.js canvas init
+// ------------------------------------------------------------------------------------------
 let weight = document.getElementById("weight");
 
 let c = document.getElementById("c");
@@ -52,7 +56,7 @@ document.getElementById("weight").onchange = function () {
 document.getElementById("clearButton").onclick = function () {
     canvas.clear();
     canvas.backgroundColor = backgroundColor_;
-    serializeCanvas();
+    // serializeCanvas();
 };
 
 document.getElementById("eraserButton").addEventListener("click", toggleEraser);
@@ -65,12 +69,11 @@ function toggleEraser() {
     canvas.freeDrawingBrush.width = width;
 
     canvas.isDrawingMode = true;
-    isPanning = false;
 
-    ele.style.touchAction = "none";
-    ele.style.cursor = "auto !important"
+    // ele.style.touchAction = "none";
+    // ele.style.cursor = "auto !important"
 
-    ele.removeEventListener("mousedown", mouseDownHandler);
+    // ele.removeEventListener("mousedown", mouseDownHandler);
 }
 
 // panPan
@@ -117,10 +120,9 @@ function togglePencil() {
     canvas.freeDrawingBrush.width = width;
 
     canvas.isDrawingMode = true;
-    isPanning = false;
 
-    ele.style.touchAction = "none";
-    ele.style.cursor = "auto !important"
+    // ele.style.touchAction = "none";
+    // ele.style.cursor = "auto !important"
 
     // ele.removeEventListener("mousedown", mouseDownHandler);
 }
@@ -129,55 +131,31 @@ function togglePencil() {
 // document.getElementById("panButton").addEventListener("click", togglePan);
 // function togglePan() {
 //     canvas.isDrawingMode = false;
-//     isPanning = true;
 
 //     ele.style.touchAction = "auto";
-//     ele.style.cursor = "grab !important";
+//     ele.style.cursor = "auto !important"; // grab
 
 //     // ele.addEventListener("mousedown", mouseDownHandler);
 // }
 
+// Socket init and events
+// ------------------------------------------------------------------------------------------
+let singleMode;
+
 const socket = io("/drawing");
 
-$(window).on("hidden.bs.modal", serializeCanvas);
-canvas.on("mouse:up", serializeCanvas);
-function serializeCanvas() {
-    canvasJSON = JSON.stringify(canvas);
-    sendCanvas(canvasJSON);
-}
-
-function sendCanvas(canvasJSON) {
-    req = { canvas: canvasJSON, room: uuid }
-    console.log(uuid);
-    socket.emit("json", req);
-    console.log("--> canvas sent");
-    receiveCanvas();
-}
-function receiveCanvas() {
-    socket.on("json", function (arg, callback) {
-        updateCanvas(arg);
-    });
-}
-function updateCanvas(newCanvas) {
-    console.log(newCanvas);
-    canvas.clear();
-    canvas.loadFromJSON(JSON.parse(newCanvas));
-    canvas.renderAll();
-    console.log("Done!");
-}
-
+// On app load
+// ------------------------------------------------------------------------------------------
 $(window).on("load", function () {
     $("#exampleModal").modal({ "backdrop": "static", "keyboard": false, "show": false });
-    $("#exampleModal").modal("show"); // { "backdrop": "static", "keyboard": false, "show": true }
+    $("#exampleModal").modal("show");
 });
 
 document.addEventListener("DOMContentLoaded", function () {
     OverlayScrollbars(document.querySelectorAll("#canvasContainer"), { className: "os-theme-block-dark" });
 });
 
-
 $(window).on("shown.bs.modal", function () {
-
     // Generate room ID
     document.getElementById("generate").addEventListener("click", generateRoomId);
     function generateRoomId() {
@@ -195,32 +173,49 @@ $(window).on("shown.bs.modal", function () {
     // }
 
     // Step 1 - Create room
-    $('#create-button').click(createRoom);
+    $("#create-button").click(createRoom);
     function createRoom() {
-        username = $('#create-username').val();
-        if (username === "") {
-            username = "Nameless";
+        username = $("#create-username").val();
+        if (username === "" || username.startsWith(" ")) {
+            username = "Unnamed";
         }
         uuid = $("#room-id").val();
-        socket.emit("join", { username: username, room: uuid });
+        if (uuid == "") {
+            $("#exampleModal").modal("hide");
+        } else {
+            socket.emit("join", { username: username, room: uuid });
 
-        $("#exampleModal").modal("hide");
+            $("#exampleModal").modal("hide");
+
+            $(window).on("hidden.bs.modal", serializeCanvas);
+            canvas.on("mouse:up", serializeCanvas);
+            function serializeCanvas() {
+                canvasJSON = JSON.stringify(canvas);
+                sendCanvas(canvasJSON);
+            }
+
+            function sendCanvas(canvasJSON) {
+                req = { canvas: canvasJSON, room: uuid }
+                socket.emit("json", req);
+                console.log("Canvas sent!");
+                receiveCanvas();
+            }
+            // TODO: use callback
+            function receiveCanvas() {
+                socket.on("json", function (arg, callback) {
+                    updateCanvas(arg);
+                });
+            }
+            function updateCanvas(newCanvas) {
+                canvas.clear();
+                canvas.loadFromJSON(JSON.parse(newCanvas));
+                canvas.renderAll();
+                console.log("Canvas updated!");
+            }
+        }
     }
+})
 
-
-
-
-    // Step 2 - Single-person room
-    $('button[data-bs-target="#collapseThree"]').click(openSingleRoom);
-    function openSingleRoom() {
-        $("#exampleModal").modal("hide");
-    }
-
-    // socket.on("connect", function () {
-    socket.emit("hello", "Connected!");
-    console.log("Connected!");
-    // });
-
-
-
-});
+// socket.on("connect", function () {
+//     console.log("Connected!");
+// }
