@@ -11,7 +11,6 @@ def serve(app) :
         else:
             return f"{escape(app)}"
 
-
 from flask_socketio import SocketIO, send, emit, join_room, leave_room
 
 socketio = SocketIO(flask_app)
@@ -31,4 +30,4 @@ def on_join(data):
     print(f"User {username} joined room {room}")
 
 if __name__ == "__main__":
-    socketio.run(flask_app, host="0.0.0.0")
+    socketio.run(flask_app) # , host="0.0.0.0"
