@@ -1,36 +1,18 @@
-(function () {
-    var defaultOnTouchStartHandler = fabric.Canvas.prototype._onTouchStart;
-    fabric.util.object.extend(fabric.Canvas.prototype, {
-        _onTouchStart: function (e) {
-            var target = this.findTarget(e);
-            if (this.allowTouchScrolling && !target && !this.isDrawingMode) {
-                return;
-            }
+// (function () {
+//     var defaultOnTouchStartHandler = fabric.Canvas.prototype._onTouchStart;
+//     fabric.util.object.extend(fabric.Canvas.prototype, {
+//         _onTouchStart: function (e) {
+//             var target = this.findTarget(e);
+//             if (this.allowTouchScrolling && !target && !this.isDrawingMode) {
+//                 return;
+//             }
 
-            defaultOnTouchStartHandler.call(this, e);
-        }
-    });
-})();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//             defaultOnTouchStartHandler.call(this, e);
+//         }
+//     });
+// })();
 
 let uuid
-
-
-
-
 
 backgroundColor_ = "#e9e9ed";
 
@@ -144,18 +126,16 @@ function togglePencil() {
 }
 
 
-document.getElementById("panButton").addEventListener("click", togglePan);
-function togglePan() {
-    canvas.isDrawingMode = false;
-    isPanning = true;
+// document.getElementById("panButton").addEventListener("click", togglePan);
+// function togglePan() {
+//     canvas.isDrawingMode = false;
+//     isPanning = true;
 
-    ele.style.touchAction = "auto";
-    ele.style.cursor = "grab !important";
+//     ele.style.touchAction = "auto";
+//     ele.style.cursor = "grab !important";
 
-    // ele.addEventListener("mousedown", mouseDownHandler);
-}
-
-let isSinglePerson;
+//     // ele.addEventListener("mousedown", mouseDownHandler);
+// }
 
 const socket = io("/drawing");
 
@@ -186,20 +166,8 @@ function updateCanvas(newCanvas) {
     console.log("Done!");
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
 $(window).on("load", function () {
-    // $("#exampleModal").modal({ "backdrop": "static", "keyboard": false, "show": false });
+    $("#exampleModal").modal({ "backdrop": "static", "keyboard": false, "show": false });
     $("#exampleModal").modal("show"); // { "backdrop": "static", "keyboard": false, "show": true }
 });
 
@@ -234,7 +202,6 @@ $(window).on("shown.bs.modal", function () {
             username = "Nameless";
         }
         uuid = $("#room-id").val();
-        // socket.join(uuid);
         socket.emit("join", { username: username, room: uuid });
 
         $("#exampleModal").modal("hide");
@@ -247,7 +214,6 @@ $(window).on("shown.bs.modal", function () {
     $('button[data-bs-target="#collapseThree"]').click(openSingleRoom);
     function openSingleRoom() {
         $("#exampleModal").modal("hide");
-        isSinglePerson = true;
     }
 
     // socket.on("connect", function () {

@@ -3,6 +3,10 @@
 <head>
   <meta charset="UTF-8" name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  <title>Drawing for Two</title>
+
+
   <link rel="stylesheet" href="/static/drawing_for_two/style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css"
     integrity="sha512-10/jx2EXwxxWqCLX/hHth/vu2KY3jCF70dCQB8TSgNjbCVAC/8vai53GfMDrO2Emgwccf2pJqxct9ehpzG+MTw=="
@@ -61,15 +65,15 @@
         <!-- <div id="slider-vertical" style="height:100px;"></div> -->
       </li>
       <li>
-        <label for="pencilButton">工具</label>
+        <!-- <label for="pencilButton">工具</label> -->
         <button id="pencilButton"><i class="fa fa-pencil"></i></button>
       </li>
       <li>
         <button id="eraserButton"><i class="fa fa-eraser"></i></button>
       </li>
-      <li>
+      <!-- <li>
         <button id="panButton"><i class="fa fa-arrows-up-down-left-right"></i></button>
-      </li>
+      </li> -->
       <li>
         <button id="clearButton"><i class="fa fa-trash"></i></button>
       </li>
@@ -80,41 +84,23 @@
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">欢迎光临</h5>
+        </div>
         <div class="modal-body">
-          <div class="accordion" id="accordionExample">
-            <div class="accordion-item">
-              <h2 class="accordion-header" id="headingTwo">
-                <button id="b3" class="accordion-button" type="button" data-bs-toggle="collapse"
-                  data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                  加入绘图组
-                </button>
-              </h2>
-              <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
-                data-bs-parent="#accordionExample">
-                <div class="accordion-body">
-                  <div class="input-group mb-3">
-                    <span class="input-group-text" id="basic-addon3">名字</span>
-                    <input type="text" class="form-control" id="create-username" aria-describedby="basic-addon3">
-                  </div>
-                  <div class="input-group mb-3">
-                    <span class="input-group-text" id="basic-addon3">组号</span>
-                    <input type="text" class="form-control" id="room-id" aria-describedby="basic-addon3">
-                    <button class="btn btn-outline-secondary" type="button" id="generate">Generate</button>
-                  </div>
-                  <div class="d-grid gap-2 col-6 mx-auto">
-                    <button id="create-button" class="btn btn-primary" type="button">加入</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="accordion-item">
-              <h2 class="accordion-header" id="headingThree">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                  data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                  <span id="margg">个人绘图组</span><i class="bi bi-box-arrow-up-right"></i>
-                </button>
-              </h2>
-            </div>
+          <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon3">名字</span>
+            <input type="text" class="form-control" id="create-username" aria-describedby="basic-addon3">
+          </div>
+          <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon3">组号</span>
+            <input type="text" class="form-control" id="room-id" aria-describedby="basic-addon3">
+            <button class="btn btn-secondary" type="button" id="generate">生成</button>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div class="d-grid gap-2 col-6 mx-auto">
+            <button id="create-button" class="btn btn-primary" type="button">加入</button>
           </div>
         </div>
       </div>

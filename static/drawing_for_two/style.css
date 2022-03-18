@@ -48,7 +48,7 @@ html, body {
 
 .sidebar input,
 .sidebar button {
-    width: 45px;
+    width: 48px;
 }
 
 .sidebar li:nth-last-of-type(4) {
@@ -78,10 +78,10 @@ button.accordion-button.collapsed::after, button.accordion-button::after {
     box-shadow: none !important;
 }
 
-#margg {
-    margin-right: 10px;
+.canvas-container {
+    margin: auto;
 }
 
-.canvas-container {
+ul {
     margin: auto;
 }
