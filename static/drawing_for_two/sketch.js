@@ -26,7 +26,7 @@
 
 
 
-
+let uuid
 
 
 
@@ -155,24 +155,21 @@ function togglePan() {
     // ele.addEventListener("mousedown", mouseDownHandler);
 }
 
+let isSinglePerson;
 
 const socket = io("/drawing");
 
 $(window).on("hidden.bs.modal", serializeCanvas);
 canvas.on("mouse:up", serializeCanvas);
-// canvas.on("mouse:move", serializeCanvas);
-// canvas.on("object:added", serializeCanvas);
-// canvas.on("object:modified", serializeCanvas);
-// canvas.on("object:removed", serializeCanvas);
 function serializeCanvas() {
-    // canvasJSON = canvas.toJSON();
     canvasJSON = JSON.stringify(canvas);
-    // console.log(canvasJSON);
     sendCanvas(canvasJSON);
 }
 
 function sendCanvas(canvasJSON) {
-    socket.emit("json", canvasJSON);
+    req = { canvas: canvasJSON, room: uuid }
+    console.log(uuid);
+    socket.emit("json", req);
     console.log("--> canvas sent");
     receiveCanvas();
 }
@@ -184,8 +181,6 @@ function receiveCanvas() {
 function updateCanvas(newCanvas) {
     console.log(newCanvas);
     canvas.clear();
-    // setTimeout(console.log("Waiting..."), 5000);
-    // var canvas = new fabric.Canvas();
     canvas.loadFromJSON(JSON.parse(newCanvas));
     canvas.renderAll();
     console.log("Done!");
@@ -204,34 +199,62 @@ function updateCanvas(newCanvas) {
 
 
 $(window).on("load", function () {
-    // $("#exampleModal").modal({ "backdrop": "static", "keyboard": false, "show": false }); // { "backdrop": "static", "keyboard": false, "show": true }
+    // $("#exampleModal").modal({ "backdrop": "static", "keyboard": false, "show": false });
     $("#exampleModal").modal("show"); // { "backdrop": "static", "keyboard": false, "show": true }
 });
 
 document.addEventListener("DOMContentLoaded", function () {
-    //The first argument are the elements to which the plugin shall be initialized
-    //The second argument has to be at least a empty object or a object with your desired options
     OverlayScrollbars(document.querySelectorAll("#canvasContainer"), { className: "os-theme-block-dark" });
 });
 
-$(window).on("shown.bs.modal", function () {
-    let uuid = self.crypto.randomUUID().split("-", 1);
 
-    $("#room-id").val(uuid).attr("readonly", "readonly");
+$(window).on("shown.bs.modal", function () {
+
+    // Generate room ID
+    document.getElementById("generate").addEventListener("click", generateRoomId);
+    function generateRoomId() {
+        uuid = self.crypto.randomUUID().split("-", 1)[0];
+        $("#room-id").val(uuid); // .attr("readonly", "readonly")
+    }
+
+    // function copyToClipboard() {
+    //     var room_id = document.getElementById("room-id");
+
+    //     room_id.select();
+    //     room_id.setSelectionRange(0, 99999); /* for mobile devices */
+
+    //     navigator.clipboard.writeText(room_id.value);
+    // }
+
+    // Step 1 - Create room
+    $('#create-button').click(createRoom);
+    function createRoom() {
+        username = $('#create-username').val();
+        if (username === "") {
+            username = "Nameless";
+        }
+        uuid = $("#room-id").val();
+        // socket.join(uuid);
+        socket.emit("join", { username: username, room: uuid });
+
+        $("#exampleModal").modal("hide");
+    }
+
+
+
+
+    // Step 2 - Single-person room
+    $('button[data-bs-target="#collapseThree"]').click(openSingleRoom);
+    function openSingleRoom() {
+        $("#exampleModal").modal("hide");
+        isSinglePerson = true;
+    }
 
     // socket.on("connect", function () {
     socket.emit("hello", "Connected!");
     console.log("Connected!");
     // });
 
-    document.getElementById("copyToClipboard").addEventListener("click", copyToClipboard);
-    function copyToClipboard() {
-        var room_id = document.getElementById("room-id");
 
-        room_id.select();
-        room_id.setSelectionRange(0, 99999); /* for mobile devices */
-
-        navigator.clipboard.writeText(room_id.value);
-    }
 
 });

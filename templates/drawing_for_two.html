@@ -83,34 +83,10 @@
         <div class="modal-body">
           <div class="accordion" id="accordionExample">
             <div class="accordion-item">
-              <h2 class="accordion-header" id="headingOne">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
-                  aria-expanded="true" aria-controls="collapseOne">
-                  加入绘图组
-                </button>
-              </h2>
-              <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
-                data-bs-parent="#accordionExample">
-                <div class="accordion-body">
-                  <div class="input-group mb-3">
-                    <span class="input-group-text" id="basic-addon3">名字</span>
-                    <input type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3">
-                  </div>
-                  <div class="input-group mb-3">
-                    <span class="input-group-text" id="basic-addon3">组号</span>
-                    <input type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3">
-                  </div>
-                  <div class="d-grid gap-2 col-6 mx-auto">
-                    <button class="btn btn-primary" type="button">加入</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="accordion-item">
               <h2 class="accordion-header" id="headingTwo">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                <button id="b3" class="accordion-button" type="button" data-bs-toggle="collapse"
                   data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                  创建绘图组
+                  加入绘图组
                 </button>
               </h2>
               <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
@@ -118,16 +94,15 @@
                 <div class="accordion-body">
                   <div class="input-group mb-3">
                     <span class="input-group-text" id="basic-addon3">名字</span>
-                    <input type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3">
+                    <input type="text" class="form-control" id="create-username" aria-describedby="basic-addon3">
                   </div>
                   <div class="input-group mb-3">
                     <span class="input-group-text" id="basic-addon3">组号</span>
                     <input type="text" class="form-control" id="room-id" aria-describedby="basic-addon3">
-                    <button class="btn btn-outline-secondary" type="button" id="copyToClipboard"><i
-                        class="bi bi-clipboard"></i></button>
+                    <button class="btn btn-outline-secondary" type="button" id="generate">Generate</button>
                   </div>
                   <div class="d-grid gap-2 col-6 mx-auto">
-                    <button class="btn btn-primary" type="button">加入</button>
+                    <button id="create-button" class="btn btn-primary" type="button">加入</button>
                   </div>
                 </div>
               </div>

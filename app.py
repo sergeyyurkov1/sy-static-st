@@ -20,14 +20,17 @@ socketio = SocketIO(flask_app)
 @socketio.on("json", namespace="/drawing")
 def handle_message(data):
     global canvas
-    canvas = data
-    print(str(canvas))
-    emit("json", canvas, json=True, broadcast=True)
+    room = str(data["room"])
+    canvas = data["canvas"]
+    print("---", room, canvas, "---")
+    emit("json", canvas, json=True, broadcast=True, room=room)
 
-@socketio.on("hello", namespace="/drawing")
-def handle_message(data):
-    print(data)
-    emit("json", canvas, json=True, broadcast=True)
+@socketio.on("join", namespace="/drawing")
+def on_join(data):
+    username = data["username"]
+    room = str(data["room"])
+    join_room(room)
+    print(f"{username} joined {room}")
 
 if __name__ == "__main__":
     socketio.run(flask_app, host="0.0.0.0")
