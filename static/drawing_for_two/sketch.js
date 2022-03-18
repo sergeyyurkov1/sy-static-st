@@ -204,6 +204,7 @@ function updateCanvas(newCanvas) {
 
 
 $(window).on("load", function () {
+    // $("#exampleModal").modal({ "backdrop": "static", "keyboard": false, "show": false }); // { "backdrop": "static", "keyboard": false, "show": true }
     $("#exampleModal").modal("show"); // { "backdrop": "static", "keyboard": false, "show": true }
 });
 

@@ -73,11 +73,15 @@ button.accordion-button.collapsed::after, button.accordion-button::after {
     visibility: hidden;
 }
 
-button {
+* {
     outline: none !important;
     box-shadow: none !important;
 }
 
 #margg {
     margin-right: 10px;
+}
+
+.canvas-container {
+    margin: auto;
 }
