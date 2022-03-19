@@ -142,6 +142,11 @@ function togglePencil() {
 //     socket.emit("undo", uuid);
 // }
 
+document.getElementById("saveButton").onclick = function () {
+    canvas.renderAll();
+    window.open(canvas.toDataURL("png"));
+}
+
 // Socket init and events
 // ------------------------------------------------------------------------------------------
 let singleMode;
