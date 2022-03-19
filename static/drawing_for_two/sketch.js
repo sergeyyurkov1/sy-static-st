@@ -144,7 +144,12 @@ function togglePencil() {
 
 document.getElementById("saveButton").onclick = function () {
     canvas.renderAll();
-    window.open(canvas.toDataURL("png"));
+    let a = document.createElement("a");
+    a.style.display = "none";
+    a.href = canvas.toDataURL("png");
+    a.download = "drawing.png";
+    document.body.appendChild(a);
+    a.click();
 }
 
 // Socket init and events
