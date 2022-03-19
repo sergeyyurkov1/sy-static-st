@@ -56,7 +56,7 @@ document.getElementById("weight").onchange = function () {
 document.getElementById("clearButton").onclick = function () {
     canvas.clear();
     canvas.backgroundColor = backgroundColor_;
-    // serializeCanvas();
+    serializeCanvas();
 };
 
 document.getElementById("eraserButton").addEventListener("click", toggleEraser);
@@ -77,39 +77,39 @@ function toggleEraser() {
 }
 
 // panPan
-const ele = document.getElementById("canvasContainer");
-let pos = { top: 0, left: 0, x: 0, y: 0 };
-const mouseDownHandler = function (e) {
-    ele.style.cursor = "grabbing";
-    ele.style.userSelect = "none";
+// const ele = document.getElementById("canvasContainer");
+// let pos = { top: 0, left: 0, x: 0, y: 0 };
+// const mouseDownHandler = function (e) {
+//     ele.style.cursor = "grabbing";
+//     ele.style.userSelect = "none";
 
-    pos = {
-        left: ele.scrollLeft,
-        top: ele.scrollTop,
-        // Get the current mouse position
-        x: e.clientX,
-        y: e.clientY,
-    };
+//     pos = {
+//         left: ele.scrollLeft,
+//         top: ele.scrollTop,
+//         // Get the current mouse position
+//         x: e.clientX,
+//         y: e.clientY,
+//     };
 
-    document.addEventListener("mousemove", mouseMoveHandler);
-    document.addEventListener("mouseup", mouseUpHandler);
-};
-const mouseMoveHandler = function (e) {
-    // How far the mouse has been moved
-    const dx = e.clientX - pos.x;
-    const dy = e.clientY - pos.y;
+//     document.addEventListener("mousemove", mouseMoveHandler);
+//     document.addEventListener("mouseup", mouseUpHandler);
+// };
+// const mouseMoveHandler = function (e) {
+//     // How far the mouse has been moved
+//     const dx = e.clientX - pos.x;
+//     const dy = e.clientY - pos.y;
 
-    // Scroll the element
-    ele.scrollTop = pos.top - dy;
-    ele.scrollLeft = pos.left - dx;
-};
-const mouseUpHandler = function () {
-    ele.style.cursor = "grab";
-    ele.style.removeProperty("user-select");
+//     // Scroll the element
+//     ele.scrollTop = pos.top - dy;
+//     ele.scrollLeft = pos.left - dx;
+// };
+// const mouseUpHandler = function () {
+//     ele.style.cursor = "grab";
+//     ele.style.removeProperty("user-select");
 
-    document.removeEventListener("mousemove", mouseMoveHandler);
-    document.removeEventListener("mouseup", mouseUpHandler);
-};
+//     document.removeEventListener("mousemove", mouseMoveHandler);
+//     document.removeEventListener("mouseup", mouseUpHandler);
+// };
 
 document.getElementById("pencilButton").addEventListener("click", togglePencil);
 function togglePencil() {
@@ -138,11 +138,34 @@ function togglePencil() {
 //     // ele.addEventListener("mousedown", mouseDownHandler);
 // }
 
+// document.getElementById("undoButton").onclick = function () {
+//     socket.emit("undo", uuid);
+// }
+
 // Socket init and events
 // ------------------------------------------------------------------------------------------
 let singleMode;
 
 const socket = io("/drawing");
+
+socket.on("connect", function () {
+    console.log("Connected!");
+});
+socket.on("joined", function (arg) {
+    alert(`${arg}参加啦！`);
+});
+socket.on("json", function (arg, callback) {
+    if (arg != canvasJSON) {
+        updateCanvas(arg);
+    }
+});
+
+function updateCanvas(newCanvas) {
+    canvas.clear();
+    canvas.loadFromJSON(JSON.parse(newCanvas));
+    // canvas.renderAll();
+    console.log("Canvas updated!");
+}
 
 // On app load
 // ------------------------------------------------------------------------------------------
@@ -155,67 +178,52 @@ document.addEventListener("DOMContentLoaded", function () {
     OverlayScrollbars(document.querySelectorAll("#canvasContainer"), { className: "os-theme-block-dark" });
 });
 
+let canvasJSON = ""
+
+function serializeCanvas() {
+    canvasJSON = JSON.stringify(canvas);
+    console.log("Canvas serialized!");
+    sendCanvas(canvasJSON);
+}
+
+function sendCanvas(canvasJSON) {
+    req = { canvas: canvasJSON, room: uuid }
+    socket.emit("json", req);
+    console.log("Canvas sent!");
+}
+
+canvas.on("path:created", serializeCanvas);
+// canvas.on("canvas:cleared", serializeCanvas); // problematic for now
+
 $(window).on("shown.bs.modal", function () {
     // Generate room ID
     document.getElementById("generate").addEventListener("click", generateRoomId);
     function generateRoomId() {
         uuid = self.crypto.randomUUID().split("-", 1)[0];
         $("#room-id").val(uuid); // .attr("readonly", "readonly")
+
+        // Select and copy room id to clipboard
+        var room_id = document.getElementById("room-id");
+        room_id.select();
+        room_id.setSelectionRange(0, 99999); /* for mobile devices */
+        navigator.clipboard.writeText(room_id.value);
     }
-
-    // function copyToClipboard() {
-    //     var room_id = document.getElementById("room-id");
-
-    //     room_id.select();
-    //     room_id.setSelectionRange(0, 99999); /* for mobile devices */
-
-    //     navigator.clipboard.writeText(room_id.value);
-    // }
 
     // Step 1 - Create room
     $("#create-button").click(createRoom);
     function createRoom() {
-        username = $("#create-username").val();
-        if (username === "" || username.startsWith(" ")) {
+        username = String($("#create-username").val());
+        if (username === "" || username.trim() === "") {
             username = "Unnamed";
         }
-        uuid = $("#room-id").val();
+        uuid = String($("#room-id").val());
         if (uuid == "") {
             $("#exampleModal").modal("hide");
+            alert("进入了单用户模式")
         } else {
             socket.emit("join", { username: username, room: uuid });
 
             $("#exampleModal").modal("hide");
-
-            $(window).on("hidden.bs.modal", serializeCanvas);
-            canvas.on("mouse:up", serializeCanvas);
-            function serializeCanvas() {
-                canvasJSON = JSON.stringify(canvas);
-                sendCanvas(canvasJSON);
-            }
-
-            function sendCanvas(canvasJSON) {
-                req = { canvas: canvasJSON, room: uuid }
-                socket.emit("json", req);
-                console.log("Canvas sent!");
-                receiveCanvas();
-            }
-            // TODO: use callback
-            function receiveCanvas() {
-                socket.on("json", function (arg, callback) {
-                    updateCanvas(arg);
-                });
-            }
-            function updateCanvas(newCanvas) {
-                canvas.clear();
-                canvas.loadFromJSON(JSON.parse(newCanvas));
-                canvas.renderAll();
-                console.log("Canvas updated!");
-            }
         }
     }
 })
-
-// socket.on("connect", function () {
-//     console.log("Connected!");
-// }
