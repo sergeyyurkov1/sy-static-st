@@ -95,15 +95,15 @@ element {
     top: auto;
     right: 0;
     bottom: 10px;
-    left: 20px;
-    width: calc(var(--app-width) - 40px);
+    left: 30px;
+    width: calc(var(--app-width) - 60px);
 }
 .deviant-scrollbars > .os-scrollbar-vertical {
     left: auto;
     bottom: 0;
     right: 10px;
-    top: 20px;
-    height: calc(var(--app-height) - 40px);
+    top: 30px;
+    height: calc(var(--app-height) - 60px);
 }
 .deviant-scrollbars.os-host-scrollbar-horizontal-hidden > .os-scrollbar-vertical {
     top: 0;
