@@ -2,7 +2,7 @@
     width: var(--app-width);
     height: var(--app-height);
     overflow: scroll;
-    scrollbar-width: auto;
+    /* scrollbar-width: auto; */
 }
 
 :root {
@@ -88,4 +88,26 @@ ul {
 
 element {
     cursor: default !important;
+}
+
+/* Custom scrollbar styling */
+.deviant-scrollbars > .os-scrollbar-horizontal {
+    top: auto;
+    right: 0;
+    bottom: 10px;
+    left: 10px;
+    width: 90%;
+}
+.deviant-scrollbars > .os-scrollbar-vertical {
+    left: auto;
+    bottom: 0;
+    right: 10px;
+    top: 10px;
+    height: 90%;
+}
+.deviant-scrollbars.os-host-scrollbar-horizontal-hidden > .os-scrollbar-vertical {
+    top: 0;
+}
+.deviant-scrollbars.os-host-scrollbar-vertical-hidden > .os-scrollbar-horizontal {
+    left: 0;
 }
