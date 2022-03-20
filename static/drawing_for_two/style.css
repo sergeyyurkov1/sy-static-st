@@ -91,7 +91,7 @@ element {
 }
 
 /* Custom scrollbar styling */
-.deviant-scrollbars > .os-scrollbar-horizontal {
+/* .deviant-scrollbars > .os-scrollbar-horizontal {
     top: auto;
     right: 0;
     bottom: 10px;
@@ -110,4 +110,4 @@ element {
 }
 .deviant-scrollbars.os-host-scrollbar-vertical-hidden > .os-scrollbar-horizontal {
     left: 0;
-}
+} */

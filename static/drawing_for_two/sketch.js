@@ -48,10 +48,10 @@ document.getElementById("eraserButton").addEventListener("click", toggleEraser);
 function toggleEraser() {
     canvas.isDrawingMode = true;
 
-    // canvas.freeDrawingBrush = new fabric.EraserBrush(canvas);
-    canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
+    canvas.freeDrawingBrush = new fabric.EraserBrush(canvas);
+    // canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
 
-    canvas.freeDrawingBrush.color = backgroundColor_;
+    // canvas.freeDrawingBrush.color = backgroundColor_;
     canvas.freeDrawingBrush.width = width;
 }
 
