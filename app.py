@@ -1,6 +1,8 @@
 from flask import Flask, request, render_template
 from markupsafe import escape
 
+from flask import request
+
 flask_app = Flask(__name__, template_folder="templates")
 
 @flask_app.route("/<app>", methods=["GET"])
@@ -49,11 +51,12 @@ drawers = []
 def handle_message(data):
     room = str(data["room"])
     is_drawing = data["is_drawing"]
+    socketId = request.sid
     username = data["username"]
     if is_drawing == True:
-        drawers.append(username)
+        drawers.append(f"{username}%%{socketId}")
     else:
-        drawers.remove(username)
+        drawers.remove(f"{username}%%{socketId}")
 
     import json
     res = json.dumps({"drawers": drawers})

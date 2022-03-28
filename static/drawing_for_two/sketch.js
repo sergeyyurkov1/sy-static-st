@@ -150,6 +150,13 @@ canvas.on("mouse:up", function () {
 });
 socket.on("is_drawing", function (arg) {
     drawers = JSON.parse(arg)["drawers"];
+    for (let index = 0; index < drawers.length; index++) {
+        if (drawers[index].includes(socketId)) {
+            drawers.splice(index, 1);
+        }
+    }
+    drawers = drawers.map(drawer => drawer.split("%%")[0]);
+    console.log(drawers);
     if (drawers.length === 0) {
         $("#is-drawing").text("");
     } else if (drawers.length === 1) {
@@ -161,8 +168,11 @@ socket.on("is_drawing", function (arg) {
     }
 });
 
+let socketId;
+
 socket.on("connect", function () {
-    console.log("Connected!");
+    socketId = socket.id;
+    console.log(`Connected! ID=${socketId}`);
 });
 socket.on("joined", function (arg) {
     Toast.fire({
