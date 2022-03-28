@@ -38,6 +38,7 @@ html, body {
     height: auto;
     padding: 5px;
     z-index: 1000;
+    border-radius: 5px;
 }
 
 .sidebar ul {
