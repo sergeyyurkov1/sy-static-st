@@ -21,7 +21,9 @@ html, body {
     position: absolute;
     background-color: #343a40;
     /* padding: 5px; */
+    border-radius: 5px;
     display: none;
+    margin-left: 6px;
 }
 
 /**/
@@ -49,13 +51,21 @@ html, body {
     height: 100%;
 }
 
+.tools {
+    border-radius: 5px;
+}
+
 .sidebar ul li {
     padding: 5px 0;
 }
 
-.sidebar input,
+.sidebar input {
+    width: 48px;
+}
+
 .sidebar button {
     width: 48px;
+    height: 48px;
 }
 
 .sidebar li:nth-last-of-type(4) {

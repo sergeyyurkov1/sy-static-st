@@ -1,3 +1,8 @@
+let buttons;
+window.addEventListener("DOMContentLoaded", (event) => {
+    buttons = document.getElementsByClassName("tools");
+});
+
 // Init
 // ------------------------------------------------------------------------------------------
 let uuid;
@@ -20,7 +25,7 @@ let c = document.getElementById("c");
 fabric.Object.prototype.transparentCorners = false;
 // fabric.Object.prototype.selectable = false;
 
-var canvas = new fabric.Canvas("c", { isDrawingMode: true, width: 1000, height: 1000, allowTouchScrolling: true, backgroundColor: backgroundColor_ });
+var canvas = new fabric.Canvas("c", { isDrawingMode: false, width: 1000, height: 1000, allowTouchScrolling: true, backgroundColor: backgroundColor_ });
 
 canvas.selection = false;
 
@@ -46,22 +51,32 @@ document.getElementById("clearButton").onclick = function () {
     $("#deleteButton").css("display", "none");
 };
 
-document.getElementById("eraserButton").addEventListener("click", toggleEraser);
-function toggleEraser() {
+document.getElementById("eraserButton").addEventListener("click", function () {
     canvas.isDrawingMode = true;
 
-    canvas.freeDrawingBrush = new fabric.EraserBrush(canvas);
-    // canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
+    buttons.forEach((element) => {
+        if (element !== this) {
+            element.style.backgroundColor = "#343a40";
+        }
+    });
+    this.style.backgroundColor = "black";
 
-    // canvas.freeDrawingBrush.color = backgroundColor_;
+    canvas.freeDrawingBrush = new fabric.EraserBrush(canvas);
+
     canvas.freeDrawingBrush.width = width;
 
     $("#deleteButton").css("display", "none");
-}
+});
 
-document.getElementById("pencilButton").addEventListener("click", togglePencil);
-function togglePencil() {
+document.getElementById("pencilButton").addEventListener("click", function () {
     canvas.isDrawingMode = true;
+
+    buttons.forEach((element) => {
+        if (element !== this) {
+            element.style.backgroundColor = "#343a40";
+        }
+    });
+    this.style.backgroundColor = "black";
 
     canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
 
@@ -69,13 +84,18 @@ function togglePencil() {
     canvas.freeDrawingBrush.width = width;
 
     $("#deleteButton").css("display", "none");
-}
+});
 
-document.getElementById("panButton").addEventListener("click", togglePan);
-function togglePan() {
+document.getElementById("panButton").addEventListener("click", function () {
     canvas.isDrawingMode = false;
+    buttons.forEach((element) => {
+        if (element !== this) {
+            element.style.backgroundColor = "#343a40";
+        }
+    });
+    this.style.backgroundColor = "black";
     $("#deleteButton").css("display", "inline-block");
-}
+});
 
 document.getElementById("deleteButton").addEventListener("click", deleteObject);
 function deleteObject() {
