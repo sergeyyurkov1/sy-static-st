@@ -172,7 +172,7 @@ socket.on("is_drawing", function (arg) {
 
 let socketId;
 window.addEventListener("beforeunload", function (e) {
-    e.preventDefault();
+    // e.preventDefault();
     req = { username: username, room: uuid }
     console.log(req);
     socket.emit("leave", req);

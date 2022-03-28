@@ -17,7 +17,7 @@ def serve(app) :
 # -------------------------------
 from flask_socketio import SocketIO, emit, join_room, leave_room
 
-socketio = SocketIO(flask_app, logger=True, engineio_logger=True)
+socketio = SocketIO(flask_app) # , logger=True, engineio_logger=True
 
 # from collections import deque
 
@@ -36,11 +36,12 @@ def on_leave(data):
     except ValueError:
         print("No drawers!")
 
-    emit("left", user, broadcast=True, room=room)
+    if not room == "":
+        emit("left", user, broadcast=True, room=room)
     
-    leave_room(room)
-    
-    print(f"User {username} left room {room} -->")
+        leave_room(room)
+        
+        print(f"User {username} left room {room} -->")
 
     # disconnect()
 
@@ -82,8 +83,8 @@ def handle_message(data):
 
     import json
     res = json.dumps({"drawers": drawers})
-    print(res)
-    emit("is_drawing", res, json=True, broadcast=True, room=room)
+    if not room == "":
+        emit("is_drawing", res, json=True, broadcast=True, room=room)
 
 @socketio.on("json", namespace="/drawing")
 def handle_message(data):
