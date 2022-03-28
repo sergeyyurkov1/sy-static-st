@@ -94,12 +94,13 @@ document.getElementById("panButton").addEventListener("click", function () {
         }
     });
     this.style.backgroundColor = "black";
-    $("#deleteButton").css("display", "inline-block");
+    // $("#deleteButton").css("display", "inline-block");
 });
 
 document.getElementById("deleteButton").addEventListener("click", deleteObject);
 function deleteObject() {
     canvas.remove(canvas.getActiveObject());
+    serializeCanvas();
 }
 
 // TODO: undo functionality
@@ -132,13 +133,38 @@ const Toast = Swal.mixin({
 })
 
 const socket = io("/drawing");
+
 let canvasJSON = ""
+
+let isDrawing;
+
+canvas.on("mouse:down", function () {
+    if (canvas.isDrawingMode === true) {
+        req = { is_drawing: true, username: username, room: uuid }
+        socket.emit("is_drawing", req);
+    }
+});
+canvas.on("mouse:up", function () {
+    req = { is_drawing: false, username: username, room: uuid }
+    socket.emit("is_drawing", req);
+});
+socket.on("is_drawing", function (arg) {
+    drawers = JSON.parse(arg)["drawers"];
+    if (drawers.length === 0) {
+        $("#is-drawing").text("");
+    } else if (drawers.length === 1) {
+        drawers_string = drawers.join(", ");
+        $("#is-drawing").text(`${drawers_string} is drawing...`);
+    } else {
+        drawers_string = drawers.join(", ");
+        $("#is-drawing").text(`${drawers_string} are drawing...`);
+    }
+});
 
 socket.on("connect", function () {
     console.log("Connected!");
 });
 socket.on("joined", function (arg) {
-    // alert(`${arg}参加啦！`);
     Toast.fire({
         icon: 'info',
         title: `${arg}参加啦！`,
@@ -214,7 +240,6 @@ $(window).on("shown.bs.modal", function () {
         if (uuid == "") {
             $("#entry-point").modal("hide");
 
-            // alert("进入了单用户模式");
             Toast.fire({
                 icon: 'info',
                 title: '进入了单用户模式',
@@ -231,4 +256,19 @@ $(window).on("shown.bs.modal", function () {
 })
 
 canvas.on("path:created", serializeCanvas);
-// canvas.on("canvas:cleared", serializeCanvas); // problematic for now
+canvas.on("object:modified", serializeCanvas);
+canvas.on("selection:created", function () {
+    $("#deleteButton").css("display", "inline-block");
+});
+canvas.on("selection:cleared", function () {
+    $("#deleteButton").css("display", "none");
+});
+
+// Problematic
+// -----------
+// canvas.on("object:added", serializeCanvas);
+// canvas.on("object:moving", serializeCanvas);
+// canvas.on("object:removed", serializeCanvas);
+// canvas.on("object:rotating", serializeCanvas);
+// canvas.on("object:scaling", serializeCanvas);
+// canvas.on("canvas:cleared", serializeCanvas);

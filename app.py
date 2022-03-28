@@ -43,6 +43,23 @@ canvases = {}
 
     # emit("json", res, json=True, broadcast=True, room=room)
 
+drawers = []
+
+@socketio.on("is_drawing", namespace="/drawing")
+def handle_message(data):
+    room = str(data["room"])
+    is_drawing = data["is_drawing"]
+    username = data["username"]
+    if is_drawing == True:
+        drawers.append(username)
+    else:
+        drawers.remove(username)
+
+    import json
+    res = json.dumps({"drawers": drawers})
+    print(res)
+    emit("is_drawing", res, json=True, broadcast=True, room=room)
+
 @socketio.on("json", namespace="/drawing")
 def handle_message(data):
     room = str(data["room"])

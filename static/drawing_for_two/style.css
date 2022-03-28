@@ -21,9 +21,9 @@ html, body {
     position: absolute;
     background-color: #343a40;
     /* padding: 5px; */
-    border-radius: 5px;
+    border-radius: 0 5px 5px 0;
     display: none;
-    margin-left: 0px;
+    margin-left: 5px;
 }
 
 /**/
@@ -129,3 +129,13 @@ element {
 .deviant-scrollbars.os-host-scrollbar-vertical-hidden > .os-scrollbar-horizontal {
     left: 0;
 } */
+
+.footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: transparent;
+    color: #343a40;
+    text-align: center;
+}
