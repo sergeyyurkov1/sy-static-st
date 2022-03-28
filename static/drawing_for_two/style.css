@@ -17,9 +17,16 @@ html, body {
     padding: 0;
 }
 
+#deleteButton {
+    position: absolute;
+    background-color: #343a40;
+    /* padding: 5px; */
+    display: none;
+}
+
 /**/
 .sidebar {
-    background-color: #333;
+    background-color: #343a40;
     box-shadow: 0px 0px 10px rgba(30, 30, 30, 0.75);
     color: #fff;
     transform: translate(-50%, -50%);

@@ -11,6 +11,8 @@ def serve(app) :
         else:
             return f"{escape(app)}"
 
+# Sockets part of the application
+# -------------------------------
 from flask_socketio import SocketIO, send, emit, join_room, leave_room
 
 socketio = SocketIO(flask_app)

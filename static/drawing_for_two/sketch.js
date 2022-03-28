@@ -42,6 +42,8 @@ document.getElementById("clearButton").onclick = function () {
     canvas.clear();
     canvas.backgroundColor = backgroundColor_;
     serializeCanvas();
+
+    $("#deleteButton").css("display", "none");
 };
 
 document.getElementById("eraserButton").addEventListener("click", toggleEraser);
@@ -53,6 +55,8 @@ function toggleEraser() {
 
     // canvas.freeDrawingBrush.color = backgroundColor_;
     canvas.freeDrawingBrush.width = width;
+
+    $("#deleteButton").css("display", "none");
 }
 
 document.getElementById("pencilButton").addEventListener("click", togglePencil);
@@ -63,11 +67,19 @@ function togglePencil() {
 
     canvas.freeDrawingBrush.color = color;
     canvas.freeDrawingBrush.width = width;
+
+    $("#deleteButton").css("display", "none");
 }
 
 document.getElementById("panButton").addEventListener("click", togglePan);
 function togglePan() {
     canvas.isDrawingMode = false;
+    $("#deleteButton").css("display", "inline-block");
+}
+
+document.getElementById("deleteButton").addEventListener("click", deleteObject);
+function deleteObject() {
+    canvas.remove(canvas.getActiveObject());
 }
 
 // TODO: undo functionality
@@ -87,13 +99,33 @@ document.getElementById("saveButton").onclick = function () {
 
 // Socket init and events
 // ------------------------------------------------------------------------------------------
+const Toast = Swal.mixin({
+    toast: true,
+    position: 'top',
+    showConfirmButton: false,
+    timer: 3000,
+    // timerProgressBar: true,
+    // didOpen: (toast) => {
+    //     toast.addEventListener('mouseenter', Swal.stopTimer)
+    //     toast.addEventListener('mouseleave', Swal.resumeTimer)
+    // }
+})
+
 const socket = io("/drawing");
+let canvasJSON = ""
 
 socket.on("connect", function () {
     console.log("Connected!");
 });
 socket.on("joined", function (arg) {
-    alert(`${arg}参加啦！`);
+    // alert(`${arg}参加啦！`);
+    Toast.fire({
+        icon: 'info',
+        title: `${arg}参加啦！`,
+        showClass: {
+            popup: ''
+        }
+    })
 });
 socket.on("json", function (arg, callback) { // TODO: make use of the callback
     if (arg != canvasJSON) {
@@ -101,11 +133,9 @@ socket.on("json", function (arg, callback) { // TODO: make use of the callback
     }
 });
 
-let canvasJSON = ""
-
 function serializeCanvas() {
     if (uuid === "") {
-        return false
+        return;
     }
     canvasJSON = JSON.stringify(canvas);
     console.log("Canvas serialized!");
@@ -164,7 +194,14 @@ $(window).on("shown.bs.modal", function () {
         if (uuid == "") {
             $("#entry-point").modal("hide");
 
-            alert("进入了单用户模式")
+            // alert("进入了单用户模式");
+            Toast.fire({
+                icon: 'info',
+                title: '进入了单用户模式',
+                showClass: {
+                    popup: ''
+                }
+            })
         } else {
             socket.emit("join", { username: username, room: uuid });
 
