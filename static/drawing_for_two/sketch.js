@@ -132,7 +132,9 @@ const Toast = Swal.mixin({
     // }
 })
 
-const socket = io("/drawing");
+const socket = io("/drawing", {
+    closeOnBeforeunload: false
+});
 
 let canvasJSON = ""
 
@@ -169,19 +171,53 @@ socket.on("is_drawing", function (arg) {
 });
 
 let socketId;
+window.addEventListener("beforeunload", function (e) {
+    e.preventDefault();
+    req = { username: username, room: uuid }
+    console.log(req);
+    socket.emit("leave", req);
+});
+// window.addEventListener("unload", function (e) {
+//     req = { username: username, room: uuid }
+//     console.log(req);
+//     socket.emit("leave", req);
+// });
+
+socket.on("left", function (arg) {
+    if (!arg.includes(socketId)) {
+        Toast.fire({
+            icon: 'warning',
+            title: `${arg.split("%%")[0]}退出了画组`,
+            showClass: {
+                popup: ''
+            }
+        })
+    }
+});
 
 socket.on("connect", function () {
     socketId = socket.id;
     console.log(`Connected! ID=${socketId}`);
 });
+// socket.on("disconnect", function (arg) {
+//     Toast.fire({
+//         icon: 'info',
+//         title: `${arg}退出了画组`,
+//         showClass: {
+//             popup: ''
+//         }
+//     })
+// });
 socket.on("joined", function (arg) {
-    Toast.fire({
-        icon: 'info',
-        title: `${arg}参加啦！`,
-        showClass: {
-            popup: ''
-        }
-    })
+    if (!arg.includes(socketId)) {
+        Toast.fire({
+            icon: 'info',
+            title: `${arg.split("%%")[0]}参加啦！`,
+            showClass: {
+                popup: ''
+            }
+        })
+    }
 });
 socket.on("json", function (arg, callback) { // TODO: make use of the callback
     if (arg != canvasJSON) {

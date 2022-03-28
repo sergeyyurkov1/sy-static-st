@@ -15,13 +15,35 @@ def serve(app) :
 
 # Sockets part of the application
 # -------------------------------
-from flask_socketio import SocketIO, send, emit, join_room, leave_room
+from flask_socketio import SocketIO, emit, join_room, leave_room
 
-socketio = SocketIO(flask_app)
+socketio = SocketIO(flask_app, logger=True, engineio_logger=True)
 
-from collections import deque
+# from collections import deque
 
 canvases = {}
+
+@socketio.on("leave", namespace="/drawing")
+def on_leave(data):
+    print(data)
+    socketId = request.sid
+    username = data["username"]
+    room = str(data["room"])
+    
+    user = f"{username}%%{socketId}"
+    try:
+        drawers.remove(user)
+    except ValueError:
+        print("No drawers!")
+
+    emit("left", user, broadcast=True, room=room)
+    
+    leave_room(room)
+    
+    print(f"User {username} left room {room} -->")
+
+    # disconnect()
+
 
 # def undo(room):
 #     for i in reversed(canvases[room][:-1]):
@@ -72,17 +94,19 @@ def handle_message(data):
 
 @socketio.on("join", namespace="/drawing")
 def on_join(data):
+    socketId = request.sid
     username = data["username"]
     room = str(data["room"])
+    user = f"{username}%%{socketId}"
     join_room(room)
     if room not in canvases:
         canvases[room] = [] # deque()
     print(f"User {username} joined room {room} -->")
     if len(canvases[room]) != 0:
         emit("json", canvases[room][-1], json=True, broadcast=True, room=room)
-        emit("joined", username, broadcast=True, room=room)
+        emit("joined", user, broadcast=True, room=room)
     else:
-        emit("joined", username, broadcast=True, room=room)
+        emit("joined", user, broadcast=True, room=room)
 
 if __name__ == "__main__":
     socketio.run(flask_app) # , host="0.0.0.0"
