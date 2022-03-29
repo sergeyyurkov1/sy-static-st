@@ -19,7 +19,7 @@ html, body {
 
 #deleteButton {
     position: absolute;
-    background-color: #343a40;
+    background-color: rgba(52, 58, 64, 0.7);
     border-radius: 0 5px 5px 0;
     display: none;
     margin-left: 5px;
