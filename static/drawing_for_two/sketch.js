@@ -19,6 +19,8 @@ appDimensions();
 
 // Fabric.js canvas init
 // ------------------------------------------------------------------------------------------
+let lastClicked;
+
 let weight = document.getElementById("weight");
 
 let c = document.getElementById("c");
@@ -53,6 +55,8 @@ document.getElementById("clearButton").onclick = function () {
 };
 
 document.getElementById("eraserButton").addEventListener("click", function () {
+    lastClicked = this;
+
     canvas.isDrawingMode = true;
 
     buttons.forEach((element) => {
@@ -70,6 +74,8 @@ document.getElementById("eraserButton").addEventListener("click", function () {
 });
 
 document.getElementById("pencilButton").addEventListener("click", function () {
+    lastClicked = this;
+
     canvas.isDrawingMode = true;
 
     buttons.forEach((element) => {
@@ -88,6 +94,8 @@ document.getElementById("pencilButton").addEventListener("click", function () {
 });
 
 document.getElementById("panButton").addEventListener("click", function () {
+    lastClicked = this;
+
     canvas.isDrawingMode = false;
     buttons.forEach((element) => {
         if (element !== this) {
@@ -160,7 +168,7 @@ socket.on("is_drawing", function (arg) {
     drawers = JSON.parse(arg)["drawers"];
     is_drawing = JSON.parse(arg)["is_drawing"]
     if (is_drawing == false) {
-        canvas.isDrawingMode = true;
+        // canvas.isDrawingMode = true;
         canvas.forEachObject(function (obj) {
             obj.selectable = true;
         });
@@ -168,6 +176,7 @@ socket.on("is_drawing", function (arg) {
             element.disabled = false;
             element.children[0].style.color = "white";
         });
+        document.getElementById("panButton").click();
         // document.getElementById("pencilButton").style.backgroundColor = "black";
     }
     for (let index = 0; index < drawers.length; index++) {
@@ -181,7 +190,6 @@ socket.on("is_drawing", function (arg) {
                 element.disabled = false;
                 element.children[0].style.color = "white";
             });
-            // document.getElementById("pencilButton").style.backgroundColor = "black";
         } else {
             canvas.isDrawingMode = false;
             canvas.forEachObject(function (obj) {
