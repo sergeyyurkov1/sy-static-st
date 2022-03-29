@@ -1,6 +1,7 @@
-let buttons;
+let buttons, functions;
 window.addEventListener("DOMContentLoaded", (event) => {
     buttons = document.getElementsByClassName("tools");
+    functions = document.getElementsByClassName("functions");
 });
 
 // Init
@@ -160,18 +161,39 @@ socket.on("is_drawing", function (arg) {
     is_drawing = JSON.parse(arg)["is_drawing"]
     if (is_drawing == false) {
         canvas.isDrawingMode = true;
+        canvas.forEachObject(function (obj) {
+            obj.selectable = true;
+        });
+        functions.forEach((element) => {
+            element.disabled = false;
+            element.children[0].style.color = "white";
+        });
+        // document.getElementById("pencilButton").style.backgroundColor = "black";
     }
     for (let index = 0; index < drawers.length; index++) {
         if (drawers[index].includes(socketId)) {
             drawers.splice(index, 1);
             canvas.isDrawingMode = true;
+            canvas.forEachObject(function (obj) {
+                obj.selectable = true;
+            });
+            functions.forEach((element) => {
+                element.disabled = false;
+                element.children[0].style.color = "white";
+            });
+            // document.getElementById("pencilButton").style.backgroundColor = "black";
         } else {
             canvas.isDrawingMode = false;
-            $("#deleteButton").css("display", "none");
+            canvas.forEachObject(function (obj) {
+                obj.selectable = false;
+            });
+            functions.forEach((element) => {
+                element.disabled = true;
+                element.children[0].style.color = "grey";
+            });
         }
     }
     drawers = drawers.map(drawer => drawer.split("%%")[0]);
-    console.log(drawers);
     if (drawers.length === 0) {
         $("#is-drawing").text("");
     } else if (drawers.length === 1) {
@@ -187,7 +209,6 @@ let socketId;
 window.addEventListener("beforeunload", function (e) {
     // e.preventDefault();
     req = { username: username, room: uuid }
-    console.log(req);
     socket.emit("leave", req);
 });
 // window.addEventListener("unload", function (e) {
