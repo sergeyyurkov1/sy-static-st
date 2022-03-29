@@ -140,21 +140,34 @@ let canvasJSON = ""
 
 let isDrawing;
 
-canvas.on("mouse:down", function () {
+canvas.on("mouse:down", stopDrawing);
+// canvas.on("object:moving", stopDrawing);
+// canvas.on("object:rotating", stopDrawing);
+// canvas.on("object:scaling", stopDrawing);
+function stopDrawing() {
     if (canvas.isDrawingMode === true) {
         req = { is_drawing: true, username: username, room: uuid }
         socket.emit("is_drawing", req);
     }
-});
+}
+
 canvas.on("mouse:up", function () {
     req = { is_drawing: false, username: username, room: uuid }
     socket.emit("is_drawing", req);
 });
 socket.on("is_drawing", function (arg) {
     drawers = JSON.parse(arg)["drawers"];
+    is_drawing = JSON.parse(arg)["is_drawing"]
+    if (is_drawing == false) {
+        canvas.isDrawingMode = true;
+    }
     for (let index = 0; index < drawers.length; index++) {
         if (drawers[index].includes(socketId)) {
             drawers.splice(index, 1);
+            canvas.isDrawingMode = true;
+        } else {
+            canvas.isDrawingMode = false;
+            $("#deleteButton").css("display", "none");
         }
     }
     drawers = drawers.map(drawer => drawer.split("%%")[0]);

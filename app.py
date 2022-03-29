@@ -79,10 +79,13 @@ def handle_message(data):
     if is_drawing == True:
         drawers.append(f"{username}%%{socketId}")
     else:
-        drawers.remove(f"{username}%%{socketId}")
+        try:
+            drawers.remove(f"{username}%%{socketId}")
+        except ValueError:
+            pass
 
     import json
-    res = json.dumps({"drawers": drawers})
+    res = json.dumps({"drawers": drawers, "is_drawing": is_drawing})
     if not room == "":
         emit("is_drawing", res, json=True, broadcast=True, room=room)
 
@@ -110,4 +113,4 @@ def on_join(data):
         emit("joined", user, broadcast=True, room=room)
 
 if __name__ == "__main__":
-    socketio.run(flask_app) # , host="0.0.0.0"
+    socketio.run(flask_app, host="0.0.0.0") # , host="0.0.0.0"
